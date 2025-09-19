@@ -152,6 +152,6 @@ def generate_pages_recursive(from_path, template_path, dest_path, base_path):
         node_path = os.path.join(from_path, node)
         node_dest_path = os.path.join(dest_path, node)
         if os.path.isfile(node_path):
-            generate_page(node_path, template_path, node_dest_path.replace(".md",".html"))
+            generate_page(node_path, template_path, node_dest_path.replace(".md",".html"), base_path)
         else:
-            generate_pages_recursive(node_path, template_path, node_dest_path)
+            generate_pages_recursive(node_path, template_path, node_dest_path, base_path)
