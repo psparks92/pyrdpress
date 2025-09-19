@@ -11,7 +11,7 @@ def main():
     if not base_path:
         base_path = "/"
     print(base_path)
-    migrate_files("static","public")
+    migrate_files("static","docs")
     generate_pages_recursive("content", "template.html", "docs", base_path)
 
 main()
