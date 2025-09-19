@@ -128,7 +128,7 @@ def get_child_node(type):
         case BlockType.OL:
             return "li"
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, base_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     content = ""
     with open(from_path) as file:
@@ -140,12 +140,14 @@ def generate_page(from_path, template_path, dest_path):
         output = file.read()
     output = output.replace("{{ Title }}",title)
     output = output.replace("{{ Content }}",html)
+    output = output.replace("href=\"/", f"href=\"{base_path}")
+    output = output.replace("src=\"/", f"src=\"{base_path}")
     dest_folder = "/".join(dest_path.split("/")[:-1])
     print(f"========================dest path: {dest_folder}")
     os.makedirs(dest_folder, exist_ok=True)
     with open(dest_path, mode="w") as dest:
         dest.write(output)
-def generate_pages_recursive(from_path, template_path, dest_path):
+def generate_pages_recursive(from_path, template_path, dest_path, base_path):
     for node in os.listdir(from_path):
         node_path = os.path.join(from_path, node)
         node_dest_path = os.path.join(dest_path, node)
