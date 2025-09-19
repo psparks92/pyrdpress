@@ -1,6 +1,7 @@
 import unittest
 
 from textnode import *
+from blocknode import *
 
 
 class TestTextNode(unittest.TestCase):
@@ -60,6 +61,7 @@ class TestTextNode(unittest.TestCase):
                 TextNode(" word", TextType.TEXT),
             ]
         )
+
 
     def test_img_regex(self):
         text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
@@ -126,11 +128,66 @@ class TestTextNode(unittest.TestCase):
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ]
         actual = text_to_textnodes(input)
-        print("ACTUAL OUTPUT:")
-        for node in actual:
-            print(node)
-        print("END ACTUAL OUTPUT:")
+        #print("ACTUAL OUTPUT:")
+        # for node in actual:
+        #     print(node)
+        # print("END ACTUAL OUTPUT:")
         self.assertListEqual(actual, expected)
+
+    def test_split_code(self):
+        text = "This is another paragraph with _italic_ text and `code` here"
+        expected = [
+            TextNode("This is another paragraph with", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" text and ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" here", TextType.TEXT),
+        ]
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+    def test_determine_block(self):
+        blocks = [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+                "```\nthis is code\n```",
+                "- This isn't really a\nul",
+                "> This is a quote\n>block",
+                "1. This is a li\n2. block",
+                "1. This is not a li\n3. block",
+                ]
+        block_types = []
+        for block in blocks:
+            block_types.append(get_block_type(block))
+        self.assertListEqual(block_types, [
+            BlockType.PARAGRAPH,
+            BlockType.PARAGRAPH,
+            BlockType.UL,
+            BlockType.CODE,
+            BlockType.PARAGRAPH,
+            BlockType.QUOTE,
+            BlockType.OL,
+            BlockType.PARAGRAPH,
+            ])
+
 
 if __name__ == "__main__":
     unittest.main()

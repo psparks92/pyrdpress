@@ -114,17 +114,9 @@ def text_to_textnodes(text):
     init_node = TextNode(text, TextType.TEXT)
     nodes = [init_node]
     nodes = split_nodes_image(nodes)
-    print(f"after image: {len(nodes)} nodes")
     nodes = split_nodes_link(nodes)
-    for node in nodes:
-        print(node)
-    print(f"after link: {len(nodes)} nodes")
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
-    print(f"after code: {len(nodes)} nodes")
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
-    print(f"after bold: {len(nodes)} nodes")
     nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
-    print(f"after italic: {len(nodes)} nodes")
-    print(f"{len(nodes)} Nodes returned")
     return nodes
 
